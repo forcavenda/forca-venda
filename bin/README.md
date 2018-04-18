@@ -1,1 +1,0 @@
-# Força de venda
