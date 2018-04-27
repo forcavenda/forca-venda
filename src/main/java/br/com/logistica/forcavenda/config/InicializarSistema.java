@@ -1,6 +1,6 @@
 package br.com.logistica.forcavenda.config;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +27,17 @@ public class InicializarSistema implements ApplicationListener<ContextRefreshedE
     List<Papel> papeis = papelService.findAll();
     if (papeis.isEmpty()) {
       papelService.insert(new Papel("ROLE_ADMIN").criarId());
-      papelService.insert(new Papel("ROLE_SUPERVISOR").criarId());
-      papelService.insert(new Papel("ROLE_OPERADOR").criarId());
+      papelService.insert(new Papel("ROLE_SUPERV").criarId());
+      papelService.insert(new Papel("ROLE_USER").criarId());
 
       Papel papel = papelService.findByNome("ROLE_ADMIN");
-
-      List<Papel> novoPapel = new ArrayList<>();
-      novoPapel.add(papel);
 
       Usuario entity = new Usuario();
       entity.setNomeUsuario("alcaphone");
       entity.setNome("Nome");
       entity.setEmail("email@email.com");
       entity.setSenha("senha");
-      entity.setPapeis(novoPapel);
+      entity.setPapeis(Collections.singleton(papel));
 
       usuarioService.insert(entity);
     }

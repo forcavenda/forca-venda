@@ -1,26 +1,20 @@
 package br.com.logistica.forcavenda.config;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.MongoClient;
 
-import br.com.logistica.forcavenda.models.Usuario;
-
 @Configuration
+@EnableMongoAuditing
 @PropertySource("classpath:application.properties")
 @ComponentScan(basePackages = "br.com.logistica.forcavenda.models")
-@EnableMongoAuditing
-
 public class MongoConfig extends AbstractMongoConfiguration {
 
   @Value("${spring.application.name}")
@@ -43,27 +37,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
   @Value("${spring.data.mongodb.password}")
   private String mongoPwd;
-
-  @Bean
-  public AuditorAware<Usuario> auditorProvider() {
-
-    // String uname = SecurityContextHolder.getContext().getAuthentication().getName();
-    // return Optional.of(uname);
-
-    // return ReactiveSecurityContextHolder.getContext()
-    // .map(SecurityContext::getAuthentication)
-    // .filter(Authentication::isAuthenticated)
-    // .map(Authentication::getName)
-    // .switchIfEmpty(Mono.just("julius"))
-    // .blockOptional();
-
-    return () -> {
-      Usuario usuario = new Usuario();
-      usuario.setNome("Mauricio Rocha");
-      usuario.setNomeUsuario("alcaphone");
-      return Optional.of(usuario);
-    };
-  }
 
   @Bean
   @Override

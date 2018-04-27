@@ -15,6 +15,10 @@ public final class UserDetailsRepository extends Usuario implements UserDetails 
     super(usuario);
   }
 
+  public Usuario getUsuario() {
+    return this;
+  }
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return getPapeis();
@@ -47,7 +51,7 @@ public final class UserDetailsRepository extends Usuario implements UserDetails 
 
   @Override
   public boolean isEnabled() {
-    return getHabilitado() == "S";
+    return getHabilitado().equals("S");
   }
 
 }

@@ -16,8 +16,10 @@ public class Papel implements GrantedAuthority {
   @Indexed(unique = true)
   private String nome;
 
+  public Papel() {
+  }
+
   public Papel(String nome) {
-    super();
     this.nome = nome;
   }
 
@@ -38,7 +40,7 @@ public class Papel implements GrantedAuthority {
     return nome;
   }
 
-  public void setNome(String nome) {
+  public void setPapelNome(String nome) {
     this.nome = nome;
   }
 

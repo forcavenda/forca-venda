@@ -9,9 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.logistica.forcavenda.service.IService;
 
+@Transactional(readOnly = true)
 public class IServiceImpl<T, ID extends Serializable> implements IService<T, ID> {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -28,6 +30,7 @@ public class IServiceImpl<T, ID extends Serializable> implements IService<T, ID>
   }
 
   @Override
+  @Transactional
   public <S extends T> S update(S entity) {
     logger.debug("Atualizando documento {} com informação: {}", entity.getClass(), entity
       .toString());
@@ -46,18 +49,21 @@ public class IServiceImpl<T, ID extends Serializable> implements IService<T, ID>
   }
 
   @Override
+  @Transactional
   public void deleteById(ID id) {
     logger.debug("Excluindo documento id {}", id);
     getRepository().deleteById(id);
   }
 
   @Override
+  @Transactional
   public void delete(T entity) {
     logger.debug("Excluindo documento {} com informação: {}", entity.getClass(), entity.toString());
     getRepository().delete(entity);
   }
 
   @Override
+  @Transactional
   public <S extends T> S insert(S entity) {
     logger.debug("Criando documento {} com informação: {}", entity.getClass(), entity.toString());
     return getRepository().insert(entity);
