@@ -1,7 +1,6 @@
 package br.com.logistica.forcavenda.models;
 
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -23,9 +22,6 @@ public class Regiao extends AbstractId {
   private String cidade;
   private String logradouro;
 
-  @DBRef
-  private Empresa pertence;
-
   public Regiao() {
 
   }
@@ -38,7 +34,6 @@ public class Regiao extends AbstractId {
     estado = regiao.getEstado();
     cidade = regiao.getCidade();
     logradouro = regiao.getLogradouro();
-    pertence = regiao.getPertence();
   }
 
   public String getNomeRegiao() {
@@ -67,14 +62,6 @@ public class Regiao extends AbstractId {
 
   public String getPais() {
     return pais;
-  }
-
-  public Empresa getPertence() {
-    return pertence;
-  }
-
-  public void setPertence(Empresa pertence) {
-    this.pertence = pertence;
   }
 
   public void setPais(String pais) {

@@ -8,11 +8,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.domain.Auditable;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@JsonIgnoreProperties(
-    value = { "criadoEm", "criadoPor", "modificadoEm", "modificadoPor" },
-    allowGetters = true)
+
 public abstract class AbstractId implements Auditable<Usuario, ObjectId, LocalDateTime> {
 
   @Id
@@ -21,9 +19,13 @@ public abstract class AbstractId implements Auditable<Usuario, ObjectId, LocalDa
   @Version
   protected Long versao;
 
+  @JsonIgnore
   protected LocalDateTime criadoEm;
+  @JsonIgnore
   protected Usuario criadoPor;
+  @JsonIgnore
   protected LocalDateTime modificadoEm;
+  @JsonIgnore
   protected Usuario modificadoPor;
 
   public AbstractId criarId() {

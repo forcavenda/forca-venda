@@ -1,5 +1,6 @@
 package br.com.logistica.forcavenda.models;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -22,12 +23,22 @@ public class Empresa extends AbstractId {
   @Field("nome_fantasia")
   private String nomeFantasia;
 
+  @Email
+  private String email;
+
+  @Email
+  @Field("email_secundario")
+  private String emailSecundario;
+
   private String pais;
   private String estado;
   private String cidade;
   private String logradouro;
 
-  @DBRef
+  @DBRef(lazy = false)
+  private Empresa matriz;
+
+  @DBRef(lazy = false)
   @NotNull
   private Regiao regiao;
 
@@ -44,6 +55,9 @@ public class Empresa extends AbstractId {
     cidade = empresa.getCidade();
     logradouro = empresa.getLogradouro();
     regiao = empresa.getRegiao();
+    matriz = empresa.getMatriz();
+    email = empresa.getEmail();
+    emailSecundario = empresa.getEmailSecundario();
   }
 
   public String getCnpj() {
@@ -108,5 +122,29 @@ public class Empresa extends AbstractId {
 
   public void setRegiao(Regiao regiao) {
     this.regiao = regiao;
+  }
+
+  public Empresa getMatriz() {
+    return matriz;
+  }
+
+  public void setMatriz(Empresa matriz) {
+    this.matriz = matriz;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getEmailSecundario() {
+    return emailSecundario;
+  }
+
+  public void setEmailSecundario(String emailSecundario) {
+    this.emailSecundario = emailSecundario;
   }
 }
