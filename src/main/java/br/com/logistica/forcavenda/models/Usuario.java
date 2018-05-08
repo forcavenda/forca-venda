@@ -48,18 +48,30 @@ public class Usuario extends AbstractId {
   @NotEmpty(message = "Usuário deve possuir papeis")
   private Set<Papel> papeis = new HashSet<>();
 
+  @DBRef(lazy = false)
+  private Set<Empresa> acessos = new HashSet<>();
+
   public Usuario() {
   }
 
   public Usuario(Usuario usuario) {
     id = usuario.getId();
     nomeUsuario = usuario.getNomeUsuario();
+    acessos = usuario.getAcessos();
     nome = usuario.getNome();
     email = usuario.getEmail();
     senha = usuario.getSenha();
     papeis = usuario.getPapeis();
     habilitado = usuario.getHabilitado();
     supervisor = usuario.getSupervisor();
+  }
+
+  public Set<Empresa> getAcessos() {
+    return acessos;
+  }
+
+  public void setAcessos(Set<Empresa> acessos) {
+    this.acessos = acessos;
   }
 
   public String getNome() {

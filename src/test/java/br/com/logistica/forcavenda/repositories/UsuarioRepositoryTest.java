@@ -100,17 +100,12 @@ public class UsuarioRepositoryTest {
 
   @Test
   public void testFindByNomeUsuarioOrEmail() throws Exception {
-    // throw new RuntimeException("not yet implemented");
+    Usuario byNomeUsuario = usuarioRepository.findByNomeUsuarioOrEmail("Usuario1",
+      "email1@email.com").orElseThrow(
+      () -> new RuntimeException("Usuário não encontrado"));
+    assertThat(byNomeUsuario.getNome(), is(equalTo("Usuario1")));
+    assertThat(byNomeUsuario.getEmail(), is(equalTo("email1@email.com")));
+    long papeis = byNomeUsuario.getPapeis().size();
+    assertThat(papeis).isEqualTo(1);
   }
-
-  @Test
-  public void testExistsByNomeUsuario() throws Exception {
-    // throw new RuntimeException("not yet implemented");
-  }
-
-  @Test
-  public void testExistsByEmail() throws Exception {
-    // throw new RuntimeException("not yet implemented");
-  }
-
 }

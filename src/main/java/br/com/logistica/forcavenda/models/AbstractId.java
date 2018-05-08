@@ -11,7 +11,7 @@ import org.springframework.data.domain.Auditable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
-public abstract class AbstractId implements Auditable<Usuario, ObjectId, LocalDateTime> {
+public abstract class AbstractId implements Auditable<String, ObjectId, LocalDateTime> {
 
   @Id
   protected ObjectId id;
@@ -22,11 +22,11 @@ public abstract class AbstractId implements Auditable<Usuario, ObjectId, LocalDa
   @JsonIgnore
   protected LocalDateTime criadoEm;
   @JsonIgnore
-  protected Usuario criadoPor;
+  protected String criadoPor;
   @JsonIgnore
   protected LocalDateTime modificadoEm;
   @JsonIgnore
-  protected Usuario modificadoPor;
+  protected String modificadoPor;
 
   public AbstractId criarId() {
     id = new ObjectId();
@@ -44,12 +44,12 @@ public abstract class AbstractId implements Auditable<Usuario, ObjectId, LocalDa
   }
 
   @Override
-  public Optional<Usuario> getCreatedBy() {
+  public Optional<String> getCreatedBy() {
     return Optional.of(criadoPor);
   }
 
   @Override
-  public void setCreatedBy(Usuario createdBy) {
+  public void setCreatedBy(String createdBy) {
     criadoPor = createdBy;
   }
 
@@ -64,12 +64,12 @@ public abstract class AbstractId implements Auditable<Usuario, ObjectId, LocalDa
   }
 
   @Override
-  public Optional<Usuario> getLastModifiedBy() {
+  public Optional<String> getLastModifiedBy() {
     return Optional.of(modificadoPor);
   }
 
   @Override
-  public void setLastModifiedBy(Usuario lastModifiedBy) {
+  public void setLastModifiedBy(String lastModifiedBy) {
     modificadoPor = lastModifiedBy;
   }
 

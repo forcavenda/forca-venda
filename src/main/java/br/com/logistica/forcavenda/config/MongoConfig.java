@@ -1,5 +1,6 @@
 package br.com.logistica.forcavenda.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -56,6 +57,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
   @Bean
   @Override
+  @Qualifier("mongoTemplate")
   public MongoTemplate mongoTemplate() throws Exception {
     return new MongoTemplate(mongoClient(), getDatabaseName());
   }

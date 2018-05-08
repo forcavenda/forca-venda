@@ -38,7 +38,7 @@ public class UsuarioController extends AbsController<Usuario, String> {
 
   @PostMapping("/autenticar")
   @ApiOperation(value = "Autenticando o usuario.", notes = "API para autenticar um usuário.",
-      response = Usuario.class)
+      response = JwtAuthenticationResponse.class)
   public ResponseEntity<?> autenticar(@Valid @RequestBody LoginRequest usuario) {
     String jwt = usuarioService.getTokenProvider(usuario);
     return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));

@@ -26,7 +26,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import br.com.logistica.forcavenda.models.Usuario;
 import br.com.logistica.forcavenda.repositories.impl.UserDetailsRepository;
 
 @Configuration
@@ -115,7 +114,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public AuditorAware<Usuario> auditorProvider() {
+  public AuditorAware<String> auditorProvider() {
     return () -> {
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -125,9 +124,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return Optional.empty();
       }
 
-      Usuario usuario = ((UserDetailsRepository) SecurityContextHolder.getContext()
-        .getAuthentication().getPrincipal()).getUsuario();
-      return Optional.ofNullable(usuario);
+      String userId = ((UserDetailsRepository) SecurityContextHolder.getContext()
+        .getAuthentication().getPrincipal()).getId().toString();
+      return Optional.ofNullable(userId);
     };
   }
 

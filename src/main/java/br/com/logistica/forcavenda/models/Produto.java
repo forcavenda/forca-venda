@@ -33,6 +33,10 @@ public class Produto extends AbstractId {
   @NotNull(message = "Informe o nome do produto")
   private String nomeProduto;
 
+  @DBRef(lazy = false)
+  @NotNull(message = "Informe a categoria do produto")
+  private CategoriaProduto categoria;
+
   @Field("path_foto")
   private String pathFoto;
 
@@ -77,5 +81,13 @@ public class Produto extends AbstractId {
 
   public void setPathFoto(String pathFoto) {
     this.pathFoto = pathFoto;
+  }
+
+  public CategoriaProduto getCategoria() {
+    return categoria;
+  }
+
+  public void setCategoria(CategoriaProduto categoria) {
+    this.categoria = categoria;
   }
 }
