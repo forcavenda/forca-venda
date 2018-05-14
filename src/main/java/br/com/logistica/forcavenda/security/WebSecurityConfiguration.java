@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,16 +19,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import br.com.logistica.forcavenda.repositories.impl.UserDetailsRepository;
-
+@Order(1)
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
@@ -35,13 +32,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
   private UserDetailsService userDetailsService;
-
   @Autowired
-  private JwtAuthenticationEntryPoint unauthorizedHandler;
+  private PontoAutenticacao unauthorizedHandler;
 
   @Bean
-  public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter();
+  public FiltroAutenticacao jwtAuthenticationFilter() {
+    return new FiltroAutenticacao();
   }
 
   @Override
@@ -56,9 +52,53 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
   }
 
+  @Override
+  protected UserDetailsService userDetailsService() {
+    return userDetailsService;
+  }
+
   @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
+  public CodificarSenhaSHA256 passwordEncoder() {
+    return new CodificarSenhaSHA256();
+  }
+
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http
+      .csrf().disable()
+      .cors().disable()
+
+      .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+
+      .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+      .and().authorizeRequests()
+      .antMatchers(AUTH_WHITELIST).permitAll()
+      .antMatchers("/api/auth/**").permitAll()
+      .antMatchers("/empresa/**").hasRole("ADMIN")
+      .anyRequest().authenticated()
+
+      .and().exceptionHandling().accessDeniedPage("/api/negado");
+
+
+    http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+  }
+
+  @Bean
+  public AuditorAware<String> auditorProvider() {
+    return () -> {
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+      if (authentication == null ||
+          !authentication.isAuthenticated() ||
+          authentication instanceof AnonymousAuthenticationToken) {
+        return Optional.empty();
+      }
+
+      String userId = ((UsuarioPrincipal) SecurityContextHolder.getContext()
+        .getAuthentication().getPrincipal()).getId().toString();
+      return Optional.ofNullable(userId);
+    };
   }
 
   private static final String[] AUTH_WHITELIST = {
@@ -81,56 +121,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
       "/webjars/**"
   };
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http
-      .cors()
-      .and()
-      .csrf()
-      .disable()
-      .exceptionHandling()
-      .authenticationEntryPoint(unauthorizedHandler)
-      .and()
-      .sessionManagement()
-      .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-      .and()
-      .authorizeRequests()
-      .antMatchers(AUTH_WHITELIST).permitAll()
-      .antMatchers("/api/usuario/**")
-      .permitAll()
-      // .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
-      // .permitAll()
-      // .antMatchers(HttpMethod.GET, "/api/polls/**", "/api/users/**")
-      // .permitAll()
-      .anyRequest()
-      .authenticated().and().formLogin()
-      .loginPage("/api/usuario/autenticar").failureUrl("/api/usuario/autenticar?error=true").and()
-      .logout()
-      .logoutRequestMatcher(new AntPathRequestMatcher("/api/usuario/logout"))
-      .logoutSuccessUrl("/api/index").and().exceptionHandling()
-      .accessDeniedPage("/api/acessonegado").and().anonymous().disable();
-
-    http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-  }
-
   @Bean
-  public AuditorAware<String> auditorProvider() {
-    return () -> {
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-      if (authentication == null ||
-          !authentication.isAuthenticated() ||
-          authentication instanceof AnonymousAuthenticationToken) {
-        return Optional.empty();
-      }
-
-      String userId = ((UserDetailsRepository) SecurityContextHolder.getContext()
-        .getAuthentication().getPrincipal()).getId().toString();
-      return Optional.ofNullable(userId);
-    };
-  }
-
-  @Bean
+  // @Order(Ordered.HIGHEST_PRECEDENCE)
   public CorsFilter corsFilter() {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     CorsConfiguration config = new CorsConfiguration();

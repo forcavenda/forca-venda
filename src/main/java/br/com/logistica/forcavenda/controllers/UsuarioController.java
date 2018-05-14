@@ -16,16 +16,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.logistica.forcavenda.models.Usuario;
 import br.com.logistica.forcavenda.payload.ApiResponse;
-import br.com.logistica.forcavenda.payload.JwtAuthenticationResponse;
-import br.com.logistica.forcavenda.payload.LoginRequest;
 import br.com.logistica.forcavenda.service.UsuarioService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(value = "/api/usuario", consumes = "application/json")
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/usuario")
+@Api(value = "/api/usuario", consumes = "http", produces = "application/json")
 public class UsuarioController extends AbsController<Usuario, String> {
 
   private UsuarioService usuarioService;
@@ -36,16 +34,10 @@ public class UsuarioController extends AbsController<Usuario, String> {
     usuarioService = services;
   }
 
-  @PostMapping("/autenticar")
-  @ApiOperation(value = "Autenticando o usuario.", notes = "API para autenticar um usuário.",
-      response = JwtAuthenticationResponse.class)
-  public ResponseEntity<?> autenticar(@Valid @RequestBody LoginRequest usuario) {
-    String jwt = usuarioService.getTokenProvider(usuario);
-    return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
-  }
-
   @SuppressWarnings("unchecked")
   @PostMapping("/registrar")
+  @ApiOperation(value = "Criando usuario.", notes = "API para registrar um novo usuário.",
+      response = ApiResponse.class)
   public ResponseEntity<?> registrar(@Valid @RequestBody Usuario usuario) {
 
     if (usuarioService.existsByNomeUsuario(usuario.getNomeUsuario())) {

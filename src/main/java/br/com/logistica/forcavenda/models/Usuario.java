@@ -44,11 +44,11 @@ public class Usuario extends AbstractId {
   @DBRef
   private Usuario supervisor;
 
-  @DBRef(lazy = false)
+  @DBRef(lazy = true)
   @NotEmpty(message = "Usuário deve possuir papeis")
   private Set<Papel> papeis = new HashSet<>();
 
-  @DBRef(lazy = false)
+  @DBRef(lazy = true)
   private Set<Empresa> acessos = new HashSet<>();
 
   public Usuario() {

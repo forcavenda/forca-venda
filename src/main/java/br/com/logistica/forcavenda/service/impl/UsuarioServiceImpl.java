@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -21,8 +20,9 @@ import br.com.logistica.forcavenda.models.Usuario;
 import br.com.logistica.forcavenda.payload.LoginRequest;
 import br.com.logistica.forcavenda.repositories.PapelRepository;
 import br.com.logistica.forcavenda.repositories.UsuarioRepository;
-import br.com.logistica.forcavenda.repositories.impl.UserDetailsRepository;
-import br.com.logistica.forcavenda.security.JwtTokenProvider;
+import br.com.logistica.forcavenda.security.ProvedorToken;
+import br.com.logistica.forcavenda.security.CodificarSenhaSHA256;
+import br.com.logistica.forcavenda.security.UsuarioPrincipal;
 import br.com.logistica.forcavenda.service.UsuarioService;
 
 @Transactional(readOnly = true)
@@ -32,14 +32,14 @@ public class UsuarioServiceImpl extends IServiceImpl<Usuario, String>
 
   private UsuarioRepository usuarioRepository;
   private PapelRepository papelRepository;
-  private PasswordEncoder passwordEncoder;
+  private CodificarSenhaSHA256 passwordEncoder;
   private AuthenticationManager authenticationManager;
-  private JwtTokenProvider tokenProvider;
+  private ProvedorToken tokenProvider;
 
   @Autowired
   public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PapelRepository papelRepository,
-      AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider,
-      PasswordEncoder passwordEncoder) {
+      AuthenticationManager authenticationManager, ProvedorToken tokenProvider,
+      CodificarSenhaSHA256 passwordEncoder) {
     super();
     this.usuarioRepository = usuarioRepository;
     this.papelRepository = papelRepository;
@@ -70,7 +70,7 @@ public class UsuarioServiceImpl extends IServiceImpl<Usuario, String>
     Usuario usuario = usuarioRepository.findById(id).orElseThrow(
       () -> new UsernameNotFoundException(String.format("Usuário %s não existe!", id)));
 
-    return new UserDetailsRepository(usuario);
+    return new UsuarioPrincipal(usuario);
   }
 
   @Override
@@ -82,7 +82,7 @@ public class UsuarioServiceImpl extends IServiceImpl<Usuario, String>
       Usuario usuario = usuarioRepository.getByNomeUsuario(nomeUsuario).orElseThrow(
         () -> new UsernameNotFoundException(String.format("Usuário %s não existe!", nomeUsuario)));
 
-      return new UserDetailsRepository(usuario);
+      return new UsuarioPrincipal(usuario);
     }
   }
 

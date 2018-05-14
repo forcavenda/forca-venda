@@ -19,15 +19,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import br.com.logistica.forcavenda.service.impl.UsuarioServiceImpl;
 
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class FiltroAutenticacao extends OncePerRequestFilter {
+
+  private static final Logger logger = LoggerFactory.getLogger(FiltroAutenticacao.class);
 
   @Autowired
-  private JwtTokenProvider tokenProvider;
-
+  private ProvedorToken tokenProvider;
   @Autowired
   private UsuarioServiceImpl usuarioService;
-
-  private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -46,6 +45,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     } catch (Exception ex) {
+      SecurityContextHolder.clearContext();
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       logger.error("Não foi possível definir a autenticação do usuário no contexto de segurança.",
         ex);
     }

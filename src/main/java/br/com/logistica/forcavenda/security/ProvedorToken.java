@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import br.com.logistica.forcavenda.repositories.impl.UserDetailsRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -18,8 +17,8 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
 @Component
-public class JwtTokenProvider {
-  private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
+public class ProvedorToken {
+  private static final Logger logger = LoggerFactory.getLogger(ProvedorToken.class);
 
   @Value("${app.jwtSecret}")
   private String jwtSecret;
@@ -29,10 +28,8 @@ public class JwtTokenProvider {
 
   public String generateToken(Authentication authentication) {
 
-    UserDetailsRepository userDetails = (UserDetailsRepository) authentication.getPrincipal();
-
-    Date now = new Date();
-    Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+    UsuarioPrincipal userDetails = (UsuarioPrincipal) authentication.getPrincipal();
+    Date expiryDate = new Date(new Date().getTime() + jwtExpirationInMs);
 
     return Jwts.builder()
       .setSubject(userDetails.getId().toString())

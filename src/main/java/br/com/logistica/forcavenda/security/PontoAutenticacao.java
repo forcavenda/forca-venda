@@ -13,8 +13,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-  private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationEntryPoint.class);
+public class PontoAutenticacao implements AuthenticationEntryPoint {
+  private static final Logger logger = LoggerFactory.getLogger(PontoAutenticacao.class);
 
   @Override
   public void commence(HttpServletRequest httpServletRequest,
