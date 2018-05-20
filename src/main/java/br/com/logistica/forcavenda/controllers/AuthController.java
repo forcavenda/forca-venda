@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/api/auth")
+@RequestMapping("/api")
 @Api(value = "/api/auth", consumes = "http", produces = "application/json")
 public class AuthController {
 
@@ -30,10 +30,9 @@ public class AuthController {
     this.usuarioService = usuarioService;
   }
 
-
   @ApiOperation(value = "Autenticando o usuario.", notes = "API para autenticar um usuário.",
       response = AuthResponse.class)
-  @PostMapping
+  @PostMapping("/auth")
   public ResponseEntity<?> auth(@Valid @RequestBody LoginRequest usuario) {
     String token = usuarioService.getTokenProvider(usuario);
     return ResponseEntity.ok(new AuthResponse(token));

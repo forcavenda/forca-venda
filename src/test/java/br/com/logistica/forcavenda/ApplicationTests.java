@@ -47,7 +47,7 @@ public class ApplicationTests {
   @Test
   public void loginAvailableForAll() throws Exception {
     mockMvc
-      .perform(get("/api/auth"))
+      .perform(get("/api/auth").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk());
   }
 
