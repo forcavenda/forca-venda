@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +23,7 @@ import br.com.logistica.forcavenda.service.impl.UsuarioServiceImpl;
 public class FiltroAutenticacao extends OncePerRequestFilter {
 
   private static final Logger logger = LoggerFactory.getLogger(FiltroAutenticacao.class);
+  public static final String HEADER_PREFIX = "Bearer ";
 
   @Autowired
   private ProvedorToken tokenProvider;
@@ -55,10 +57,16 @@ public class FiltroAutenticacao extends OncePerRequestFilter {
   }
 
   private String getJwtFromRequest(HttpServletRequest request) {
-    String bearerToken = request.getHeader("Authorization");
-    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-      return bearerToken.substring(7, bearerToken.length());
+    String bearerToken = request.getHeader(WebSecurityConfiguration.JWT_TOKEN_HEADER_PARAM);
+
+    if (bearerToken.length() < HEADER_PREFIX.length()) {
+      throw new AuthenticationServiceException("Tamanho do cabeçalho de autorização inválido.");
     }
+
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)) {
+      return bearerToken.substring(HEADER_PREFIX.length(), bearerToken.length());
+    }
+
     return null;
   }
 }

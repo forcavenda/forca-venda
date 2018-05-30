@@ -1,35 +1,24 @@
-package br.com.logistica.forcavenda.models;
+package br.com.logistica.forcavenda.payload;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import br.com.logistica.forcavenda.models.Empresa;
+import br.com.logistica.forcavenda.models.Usuario;
 
-import lombok.ToString;
+public class RegistrarEmpresaRequest {
 
-@ToString
-@Document(collection = "empresa")
-public class Empresa extends AbstractId {
-
-  @Indexed(unique = true)
   @NotBlank(message = "Informe o CNPJ da empresa")
   private String cnpj;
 
-  @DBRef(lazy = false)
-  @Field("usuario_admin")
   @NotNull(message = "Informe o usuário admin da empresa")
   private Usuario usuarioAdmin;
 
-  @Field("razao_social")
   @NotBlank(message = "Informe a razão social")
   private String razaoSocial;
 
-  @Field("nome_fantasia")
   private String nomeFantasia;
 
   @Email
@@ -37,10 +26,8 @@ public class Empresa extends AbstractId {
   private String email;
 
   @Email
-  @Field("email_secundario")
   private String emailSecundario;
 
-  @Field("ponto_mapa")
   private GeoJsonPoint pontoMapa;
 
   private String pais;
@@ -48,25 +35,15 @@ public class Empresa extends AbstractId {
   private String cidade;
   private String logradouro;
 
-  @DBRef(lazy = false)
+  @NotNull(message = "Informe a empresa matriz")
   private Empresa matriz;
 
-  public Empresa() {
-
+  public String getCnpj() {
+    return cnpj;
   }
 
-  public Empresa(Empresa empresa) {
-    cnpj = empresa.getCnpj();
-    razaoSocial = empresa.getRazaoSocial();
-    nomeFantasia = empresa.getNomeFantasia();
-    usuarioAdmin = empresa.getUsuarioAdmin();
-    pais = empresa.getPais();
-    estado = empresa.getEstado();
-    cidade = empresa.getCidade();
-    logradouro = empresa.getLogradouro();
-    matriz = empresa.getMatriz();
-    email = empresa.getEmail();
-    emailSecundario = empresa.getEmailSecundario();
+  public void setCnpj(String cnpj) {
+    this.cnpj = cnpj;
   }
 
   public Usuario getUsuarioAdmin() {
@@ -75,14 +52,6 @@ public class Empresa extends AbstractId {
 
   public void setUsuarioAdmin(Usuario usuarioAdmin) {
     this.usuarioAdmin = usuarioAdmin;
-  }
-
-  public String getCnpj() {
-    return cnpj;
-  }
-
-  public void setCnpj(String cnpj) {
-    this.cnpj = cnpj;
   }
 
   public String getRazaoSocial() {
@@ -99,6 +68,30 @@ public class Empresa extends AbstractId {
 
   public void setNomeFantasia(String nomeFantasia) {
     this.nomeFantasia = nomeFantasia;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getEmailSecundario() {
+    return emailSecundario;
+  }
+
+  public void setEmailSecundario(String emailSecundario) {
+    this.emailSecundario = emailSecundario;
+  }
+
+  public GeoJsonPoint getPontoMapa() {
+    return pontoMapa;
+  }
+
+  public void setPontoMapa(GeoJsonPoint pontoMapa) {
+    this.pontoMapa = pontoMapa;
   }
 
   public String getPais() {
@@ -141,19 +134,4 @@ public class Empresa extends AbstractId {
     this.matriz = matriz;
   }
 
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getEmailSecundario() {
-    return emailSecundario;
-  }
-
-  public void setEmailSecundario(String emailSecundario) {
-    this.emailSecundario = emailSecundario;
-  }
 }

@@ -9,6 +9,12 @@ public class LoginRequest {
   @NotBlank
   private String senha;
 
+  public LoginRequest(@NotBlank String nomeUsuario, @NotBlank String senha) {
+    super();
+    this.nomeUsuario = nomeUsuario;
+    this.senha = senha;
+  }
+
   public String getNomeUsuario() {
     return nomeUsuario;
   }

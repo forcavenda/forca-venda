@@ -30,6 +30,9 @@ import org.springframework.web.filter.CorsFilter;
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+  public static final String JWT_TOKEN_HEADER_PARAM = "X-Authorization";
+  public static final String JWT_TOKEN_QUERY_PARAM = "token";
+
   @Autowired
   private UserDetailsService userDetailsService;
   @Autowired
